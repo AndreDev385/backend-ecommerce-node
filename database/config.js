@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
-const { config } = require("../config");
+const { config } = require('../config');
 
 const dbConnection = async () => {
   try {
@@ -8,9 +8,9 @@ const dbConnection = async () => {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
-    console.log('Database is connected')
+    console.log('Database is connected');
   } catch (error) {
-    throw new Error("Error", error);
+    throw new Error('Error', error);
   }
 };
 
