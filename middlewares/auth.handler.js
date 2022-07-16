@@ -23,12 +23,10 @@ function checkJWT(req, res, next) {
 function isRole(role = []) {
   return (req, res, next) => {
     if (role.includes(req.user.role)) {
-      next();
+      return next();
     } else {
-      next(boom.unauthorized('You are not authorized to access this resource'));
+      return next(boom.unauthorized('You are not authorized to access this resource'));
     }
-
-    next();
   };
 }
 

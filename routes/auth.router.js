@@ -4,7 +4,11 @@ const boom = require('@hapi/boom');
 const authService = require('../services/auth.service');
 const validatorHandler = require('../middlewares/validator.handler');
 
-const { loginUserSchema } = require('../schemas/auth.schema');
+const {
+  loginUserSchema,
+  recoverySchema,
+  changePasswordSchema,
+} = require('../schemas/auth.schema');
 const { checkJWT, isRole } = require('../middlewares/auth.handler');
 
 const router = express.Router();
@@ -63,5 +67,43 @@ router.get('/refresh-token', async (req, res, next) => {
     next(err);
   }
 });
+
+router.post(
+  '/recovery',
+  validatorHandler(recoverySchema, 'body'),
+  async (req, res, next) => {
+    try {
+      const { email } = req.body;
+      const response = await service.recovery(email);
+
+      res.json({
+        body: {},
+        message: response,
+        statusCode: 200,
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+router.put(
+  '/change-password',
+  validatorHandler(changePasswordSchema, 'body'),
+  async (req, res, next) => {
+    try {
+      const { token, password } = req.body;
+      const { message } = await service.changePassword(token, password);
+
+      res.json({
+        body: {},
+        message: message,
+        statusCode: 200,
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+);
 
 module.exports = router;

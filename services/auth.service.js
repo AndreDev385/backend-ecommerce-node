@@ -3,6 +3,7 @@ const tokenModel = require('../database/models/token.model');
 const bcrypt = require('bcrypt');
 const boom = require('@hapi/boom');
 const jwt = require('jsonwebtoken');
+const nodeMailer = require('nodemailer');
 const { config } = require('../config');
 
 class UserService {
@@ -34,6 +35,11 @@ class UserService {
 
   async loginUser({ email, password }) {
     const user = await this.isExistUser(email);
+
+    if (!user.isActive) {
+      throw boom.unauthorized();
+    }
+
     await this.isValidPassword(password, user.password);
 
     const token = this.generateAndSignAccessToken(user);
@@ -91,6 +97,83 @@ class UserService {
     });
 
     return refreshToken;
+  }
+
+  generateAndSignRecoveryToken(user) {
+    const payload = {
+      uid: user.id,
+      role: user.role,
+    };
+
+    const recoveryToken = jwt.sign(payload, config.RECOVERY_SECRET_KEY, {
+      expiresIn: config.JWT_RECOVERY_EXPIRATION,
+    });
+
+    return recoveryToken;
+  }
+
+  async sendMail(mail) {
+    try {
+      const transporter = nodeMailer.createTransport({
+        host: config.EMAIL_HOST,
+        secure: true,
+        port: config.EMAIL_PORT,
+        auth: {
+          user: config.EMAIL,
+          pass: config.EMAIL_PASSWORD,
+        },
+      });
+
+      await transporter.sendMail(mail);
+      return { message: 'Email sent successfully' };
+    } catch (err) {
+      throw boom.badImplementation('Error sending email');
+    }
+  }
+
+  async recovery(email) {
+    const user = await this.isExistUser(email);
+
+    const recoveryToken = this.generateAndSignRecoveryToken(user);
+    const link = `${config.FRONTEND_URL}/recovery?token=${recoveryToken}`;
+
+    user.recoveryToken = recoveryToken;
+    await user.save();
+
+    const mail = {
+      from: config.EMAIL,
+      to: user.email,
+      subject: 'Recovery password',
+      text: `Please click on the link to recover your password: ${link}`,
+    };
+
+    const { message } = await this.sendMail(mail);
+    return message;
+  }
+
+  async changePassword(token, password) {
+    try {
+      const payload = jwt.verify(token, config.RECOVERY_SECRET_KEY);
+      const user = await userModel.findById(payload.uid);
+
+      if (!user.isActive) {
+        throw boom.unauthorized();
+      }
+
+      if (user.recoveryToken !== token) {
+        throw boom.unauthorized();
+      }
+
+      const hashedPassword = await bcrypt.hash(password, 10);
+      user.password = hashedPassword;
+      user.recoveryToken = null;
+
+      await user.save();
+
+      return { message: 'Password changed successfully' };
+    } catch (err) {
+      throw boom.unauthorized();
+    }
   }
 }
 

@@ -11,6 +11,12 @@ class UserService {
     }
   }
 
+  async getUsers() {
+    const users = await userModel.find({ isActive: true });
+
+    return users;
+  }
+
   async createUser({ name, email, password, phoneNumber }) {
     await this.isExistEmail(email);
 
@@ -22,6 +28,30 @@ class UserService {
       password: hash,
       phoneNumber,
     });
+
+    return user;
+  }
+
+  async updateUserRole(id, role) {
+    const user = await userModel.findByIdAndUpdate(id, { role }, { new: true });
+
+    if (!user) {
+      throw boom.badRequest('User not found');
+    }
+
+    return user;
+  }
+
+  async deleteUser(id) {
+    const user = await userModel.findByIdAndUpdate(
+      id,
+      { isActive: false },
+      { new: true }
+    );
+
+    if (!user) {
+      throw boom.badRequest('User not found');
+    }
 
     return user;
   }

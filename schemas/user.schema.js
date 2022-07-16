@@ -8,6 +8,7 @@ const name = Joi.string();
 const phoneNumber = Joi.string()
   .length(10)
   .pattern(/^[0-9]+$/);
+const role = Joi.string().valid('admin', 'seller', 'user');
 
 const createUserSchema = Joi.object({
   email: email.required(),
@@ -16,4 +17,12 @@ const createUserSchema = Joi.object({
   phoneNumber: phoneNumber.required(),
 });
 
-module.exports = { createUserSchema };
+const updateUserRoleSchema = Joi.object({
+  role: role.required(),
+});
+
+const idSchema = Joi.object({
+  id: id.required(),
+});
+
+module.exports = { createUserSchema, idSchema, updateUserRoleSchema };
