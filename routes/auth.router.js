@@ -9,7 +9,6 @@ const {
   recoverySchema,
   changePasswordSchema,
 } = require('../schemas/auth.schema');
-const { checkJWT, isRole } = require('../middlewares/auth.handler');
 
 const router = express.Router();
 const service = new authService();
@@ -24,23 +23,8 @@ router.post(
 
       res.json({
         body: token,
-        message: 'User login successfully',
+        message: 'Login successful',
         statusCode: 200,
-      });
-    } catch (err) {
-      next(err);
-    }
-  }
-);
-
-router.get(
-  '/protected',
-  checkJWT,
-  isRole(['seller', 'admin']),
-  async (req, res, next) => {
-    try {
-      res.json({
-        message: 'You are logged in',
       });
     } catch (err) {
       next(err);
