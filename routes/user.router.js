@@ -12,7 +12,7 @@ const {
 const router = express.Router();
 const service = new userService();
 
-router.get('/', async (req, res, next) => {
+router.get('/', checkJWT, isRole('admin'), async (req, res, next) => {
   try {
     const users = await service.getUsers();
 
@@ -28,13 +28,15 @@ router.get('/', async (req, res, next) => {
 
 router.post(
   '/register',
+  checkJWT,
+  isRole('admin'),
   validatorHandler(createUserSchema, 'body'),
   async (req, res, next) => {
     try {
       const body = req.body;
       const user = await service.createUser(body);
 
-      res.json({
+      res.status(201).json({
         body: user,
         message: 'User created successfully',
         statusCode: 201,
