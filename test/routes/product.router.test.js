@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
 const supertest = require("supertest");
 
-const { app, server } = require("../../");
+const { app, server } = require("../..");
 const Product = require("../../database/models/product.model");
-const { validProducts, invalidProducts } = require("./productObjects");
+const { validProducts, invalidProducts } = require("./productObjects.test");
 
 const request = supertest(app);
 

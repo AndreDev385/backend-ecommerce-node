@@ -1,48 +1,25 @@
-const Joi = require("joi");
-Joi.objectId = require("joi-objectid")(Joi);
+const Joi = require('joi')
+Joi.objectId = require('joi-objectid')(Joi);
 
-const id = Joi.objectId();
-const name = Joi.string();
-const description = Joi.string();
-const brand = Joi.string();
-const categories = Joi.array().items(Joi.object({ name: Joi.string() }));
-const specificProducts = Joi.array().items(
-  Joi.object({
-    attrs: Joi.array()
-      .items(
-        Joi.object({
-          name: Joi.string(),
-          value: Joi.string(),
-        })
-      )
-      .required(),
-    assets: Joi.object({
-      defaultImg: Joi.object({
-        src: Joi.string(),
-      }).required(),
-      imgs: Joi.array().items(
-        Joi.object({
-          src: Joi.string(),
-        })
-      ),
-    }).required(),
-    stock: Joi.number().required(),
-    price: Joi.object({
-      sellPrice: Joi.number().required(),
-      regularPrice: Joi.number(),
-      discountPrice: Joi.number(),
-    }),
-  })
-);
+const id = Joi.objectId()
+const name = Joi.string()
+const brand = Joi.objectId()
+const images = Joi.array().items(Joi.objectId())
+const category = Joi.objectId()
+const description = Joi.string()
+const tags = Joi.array().items(Joi.string())
+const variations = Joi.array().items(Joi.objectId())
 
 const createProductSchema = Joi.object({
   name: name.required(),
-  description,
   brand: brand.required(),
-  categories: categories,
-  specificProducts: specificProducts.required(),
-});
+  images,
+  category: category.required(),
+  description,
+  tags,
+  variations
+})
 
 module.exports = {
-  createProductSchema,
-};
+  createProductSchema
+}
