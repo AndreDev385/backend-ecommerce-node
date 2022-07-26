@@ -10,6 +10,7 @@ const { errorHandler, boomErrorHandler } = require('./middlewares/error.handler'
 const app = express();
 
 app.use(express.json());
+app.use(express.raw({ type: 'image/*', limit: '1mb' }));
 app.use(cors());
 
 dbConnection();

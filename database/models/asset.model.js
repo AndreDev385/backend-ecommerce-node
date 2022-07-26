@@ -1,23 +1,25 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
-
 const { ObjectId } = Schema.Types;
 
-const brandSchema = new Schema(
+const assetSchema = new Schema(
   {
-    name: {
+    owner: {
+      type: ObjectId,
+      ref: 'User',
+      required: true,
+    },
+
+    originalUrl: {
       type: String,
       required: true,
     },
-    description: {
+
+    optimizedUrl: {
       type: String,
-      default: '',
-    },
-    image: {
-      type: ObjectId,
-      ref: 'Assets',
       default: null,
     },
+
     isActive: {
       type: Boolean,
       default: true,
@@ -26,6 +28,6 @@ const brandSchema = new Schema(
   { timestamps: true }
 );
 
-const brand = mongoose.model('Brand', brandSchema);
+const asset = mongoose.model('Assets', assetSchema);
 
-module.exports = brand;
+module.exports = asset;
