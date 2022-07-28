@@ -14,6 +14,7 @@ const {
 const app = express();
 
 app.use(express.json());
+app.use(express.raw({ type: 'image/*', limit: '1mb' }));
 app.use(cors());
 app.use(morgan("dev"))
 
