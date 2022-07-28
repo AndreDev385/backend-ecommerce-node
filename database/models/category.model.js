@@ -9,7 +9,7 @@ const CategorySchema = new Schema(
     },
     image: {
       type: ObjectId,
-      ref: "Asset",
+      ref: "Assets",
       default: null,
     },
     slug: {

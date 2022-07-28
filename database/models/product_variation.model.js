@@ -8,11 +8,13 @@ const ProductVariationSchema = new Schema(
       ref: "Product",
       required: true,
     },
-    images: {
-      type: ObjectId,
-      ref: "Asset",
-      default: [],
-    },
+    images: [
+      {
+        type: ObjectId,
+        ref: "Asset",
+        default: [],
+      },
+    ],
     attributes: [
       {
         name: { type: String, required: true },
