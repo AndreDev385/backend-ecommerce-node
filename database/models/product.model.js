@@ -1,4 +1,4 @@
-const { Schema, model } = require("mongoose");
+const { Schema, model } = require('mongoose');
 const { ObjectId } = Schema.Types;
 
 const ProductSchema = new Schema(
@@ -9,24 +9,24 @@ const ProductSchema = new Schema(
     },
     brand: {
       type: ObjectId,
-      ref: "Brand",
-      required: true
+      ref: 'Brand',
+      required: true,
     },
     images: [
       {
         type: ObjectId,
-        ref: "Assets",
+        ref: 'Assets',
         default: [],
       },
     ],
     category: {
       type: ObjectId,
-      ref: "Category",
+      ref: 'Category',
       required: true,
     },
     description: {
       type: String,
-      default: "",
+      default: '',
     },
     tags: [
       {
@@ -41,7 +41,7 @@ const ProductSchema = new Schema(
     variations: [
       {
         type: ObjectId,
-        ref: "ProductVariation",
+        ref: 'ProductVariation',
         default: [],
       },
     ],
@@ -59,6 +59,6 @@ ProductSchema.methods.toJSON = function () {
   return productModel;
 };
 
-const product = model("Product", ProductSchema);
+const product = model('Product', ProductSchema);
 
 module.exports = product;
