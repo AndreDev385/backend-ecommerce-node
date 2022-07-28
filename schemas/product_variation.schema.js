@@ -3,14 +3,13 @@ Joi.objectId = require("joi-objectid")(Joi);
 
 const id = Joi.objectId();
 const product = Joi.objectId();
-const images = Joi.array(Joi.string());
-const attributes = Joi.array(
+const images = Joi.array().items(Joi.string());
+const attributes = Joi.array().items(
   Joi.object({ name: Joi.string().required(), value: Joi.string().required() })
 );
-const normalPrice = Joi.number()
-const offerPrice = Joi.number()
-const stock = Joi.number()
-
+const normalPrice = Joi.number();
+const offerPrice = Joi.number();
+const stock = Joi.number();
 
 const createProductVariationSchema = Joi.object({
   product: product.required(),
@@ -19,8 +18,8 @@ const createProductVariationSchema = Joi.object({
   normalPrice,
   offerPrice,
   stock,
-})
+});
 
 module.exports = {
-  createProductVariationSchema
-}
+  createProductVariationSchema,
+};
