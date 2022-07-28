@@ -1,7 +1,10 @@
 const config = {
-  env: process.env.NODE_ENV || 'development',
-  mongodbUri: process.env.MONGO,
-  port: process.env.PORT || '4000',
+  env: process.env.NODE_ENV || "development",
+  mongodbUri:
+    process.env.NODE_ENV === "test"
+      ? process.env.MONGO_TEST
+      : process.env.MONGO,
+  port: process.env.PORT || "4000",
   SECRET_KEY: process.env.SECRET_KEY,
   REFRESH_SECRET_KEY: process.env.REFRESH_SECRET_KEY,
   RECOVERY_SECRET_KEY: process.env.RECOVERY_SECRET_KEY,
