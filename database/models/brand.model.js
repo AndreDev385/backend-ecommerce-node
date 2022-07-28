@@ -26,6 +26,14 @@ const brandSchema = new Schema(
   { timestamps: true }
 );
 
+brandSchema.methods.toJSON = function () {
+  const brandModel = this.toObject();
+  delete brandModel.createdAt;
+  delete brandModel.updatedAt;
+  delete brandModel.__v;
+  return brandModel;
+};
+
 const brand = mongoose.model('Brand', brandSchema);
 
 module.exports = brand;

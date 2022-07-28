@@ -1,5 +1,8 @@
 const VariationModel = require("../database/models/product_variation.model");
+const ProductService = require("./product.service");
 const boom = require("@hapi/boom");
+
+const productService = new ProductService();
 
 class VariationService {
   async getVariations() {
@@ -7,7 +10,9 @@ class VariationService {
   }
 
   async createVariation(body) {
-    return await VariationModel.create(body);
+    const variation = await VariationModel.create(body);
+    await productService.addVariation(variation.product, variation._id);
+    return variation;
   }
 
   async retrieveVariation(id) {}
