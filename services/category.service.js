@@ -4,6 +4,7 @@ const boom = require("@hapi/boom");
 class CategoryService {
   async getCategories() {
     const categories = await CategoryModel.find({ isActive: true });
+    console.log(categories)
     return categories;
   }
 
