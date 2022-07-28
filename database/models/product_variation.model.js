@@ -42,7 +42,7 @@ const ProductVariationSchema = new Schema(
 );
 
 ProductVariationSchema.methods.toJSON = function () {
-  const productVariationModel = this.object();
+  const productVariationModel = this.toObject();
   delete productVariationModel.createdAt;
   delete productVariationModel.updatedAt;
   delete productVariationModel.__v;

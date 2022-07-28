@@ -15,7 +15,7 @@ const ProductSchema = new Schema(
     images: [
       {
         type: ObjectId,
-        ref: "Asset",
+        ref: "Assets",
         default: [],
       },
     ],
