@@ -1,3 +1,4 @@
+
 const router = require("express").Router();
 const boom = require('@hapi/boom')
 
@@ -10,13 +11,14 @@ const {
   updateProductVariationSchema,
 } = require("../schemas/product_variation.schema");
 
+
 const variationService = new VariationService();
 
-router.get("/", async (req, res, next) => {
+router.get('/', async (req, res, next) => {
   try {
     const variations = await variationService.getVariations();
     res.status(200).json({
-      message: "success",
+      message: 'success',
       data: variations,
     });
   } catch (err) {
@@ -25,6 +27,7 @@ router.get("/", async (req, res, next) => {
 });
 
 router.post(
+
   "/",
   checkJWT,
   isRole("admin", "seller"),

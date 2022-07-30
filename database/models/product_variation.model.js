@@ -1,24 +1,38 @@
-const { Schema, model } = require("mongoose");
+const { Schema, model } = require('mongoose');
 const { ObjectId } = Schema.Types;
+
+const VariationAttributeSchema = new Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+    },
+    value: {
+      type: String,
+      required: true,
+    },
+  },
+  { _id: false }
+);
 
 const ProductVariationSchema = new Schema(
   {
     product: {
       type: ObjectId,
-      ref: "Product",
+      ref: 'Product',
       required: true,
     },
     images: [
       {
         type: ObjectId,
-        ref: "Asset",
+        ref: 'Asset',
         default: [],
       },
     ],
     attributes: [
       {
-        name: { type: String, required: true },
-        value: { type: String, required: true },
+        type: VariationAttributeSchema,
+        required: true,
       },
     ],
     normalPrice: {
@@ -54,6 +68,6 @@ ProductVariationSchema.methods.toJSON = function () {
   return productVariationModel;
 };
 
-const ProductVariationModel = model("ProductVariation", ProductVariationSchema);
+const ProductVariationModel = model('ProductVariation', ProductVariationSchema);
 
 module.exports = ProductVariationModel;
