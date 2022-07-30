@@ -1,56 +1,16 @@
+const boom = require('@hapi/boom')
+
 const ProductModel = require("../database/models/product.model");
+const {
+  productListAggregate,
+  productRetrieveAggregate,
+} = require("./utils/productService.query");
 
 class ProductService {
   async getProducts() {
-    const productsAggregate = await ProductModel.aggregate([
-      {
-        $match: { isActive: true },
-      },
-      {
-        $lookup: {
-          from: "productvariations",
-          localField: "variations",
-          foreignField: "_id",
-          as: "variations",
-        },
-      },
-      {
-        $lookup: {
-          from: "brands",
-          localField: "brand",
-          foreignField: "_id",
-          as: "brand",
-        },
-      },
-      {
-        $lookup: {
-          from: "categories",
-          localField: "category",
-          foreignField: "_id",
-          as: "category",
-        },
-      },
-      {
-        $unset: [
-          "createdAt",
-          "updatedAt",
-          "__v",
-          "isActive",
-          "variations.createdAt",
-          "variations.updatedAt",
-          "variations.__v",
-          "variations.isActive",
-          "brand.createdAt",
-          "brand.updatedAt",
-          "brand.__v",
-          "brand.isActive",
-          "category.__v",
-          "category.createdAt",
-          "category.updatedAt",
-          "category.isActive",
-        ],
-      },
-    ]);
+    const productsAggregate = await ProductModel.aggregate(
+      productListAggregate
+    );
     return productsAggregate;
   }
 
@@ -59,23 +19,42 @@ class ProductService {
     return product;
   }
 
-  async updateProduct(id, body) {}
+  async productExists(id) {
+    const product = await ProductModel.findOne({ _id: id, isActive: true });
+    if (!product) throw boom.badRequest("Product Not found");
+  }
 
-  async addVariation(id, variationId) {
-    const product = await ProductModel.findById({ _id: id });
+  async retrieveProduct(id) {
+    await this.productExists(id);
+    const product = await ProductModel.aggregate(productRetrieveAggregate(id));
+    return product;
+  }
+
+  async updateProduct(id, body) {
+    await this.productExists(id);
+    const product = await ProductModel.findByIdAndUpdate(id, body, {
+      new: true,
+    });
+    return product;
+  }
+
+  async addVariation(productId, variationId) {
+    const product = await ProductModel.findById({ _id: productId });
     await ProductModel.findByIdAndUpdate(
-      id,
+      productId,
       { variations: product.variations.concat(variationId) },
       { new: true }
     );
   }
 
   async deleteProduct(id) {
+    await this.productExists(id);
     const product = await ProductModel.findByIdAndUpdate(
       { _id: id },
       { isActive: false },
       { new: true }
     );
+    return product;
   }
 }
 

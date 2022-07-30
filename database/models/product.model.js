@@ -56,6 +56,7 @@ ProductSchema.methods.toJSON = function () {
   delete productModel.createdAt;
   delete productModel.updatedAt;
   delete productModel.__v;
+  delete productModel.isActive;
   return productModel;
 };
 

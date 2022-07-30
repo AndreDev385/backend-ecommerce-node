@@ -31,6 +31,7 @@ brandSchema.methods.toJSON = function () {
   delete brandModel.createdAt;
   delete brandModel.updatedAt;
   delete brandModel.__v;
+  delete brandModel.isActive;
   return brandModel;
 };
 

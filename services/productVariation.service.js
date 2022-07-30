@@ -1,12 +1,17 @@
+const boom = require("@hapi/boom");
+
 const VariationModel = require("../database/models/product_variation.model");
 const ProductService = require("./product.service");
-const boom = require("@hapi/boom");
+const {
+  variationListAggregate,
+  variationRetrieveAggregate,
+} = require("./utils/variationService.query");
 
 const productService = new ProductService();
 
 class VariationService {
   async getVariations() {
-    return await VariationModel.find({ isActive: true });
+    return await VariationModel.aggregate(variationListAggregate);
   }
 
   async createVariation(body) {
@@ -15,11 +20,32 @@ class VariationService {
     return variation;
   }
 
-  async retrieveVariation(id) {}
+  async variationExist(id) {
+    const variation = await VariationModel.findOne({ _id: id, isActive: true });
+    if (!variation) throw boom.badRequest("product variation not found");
+  }
 
-  async updateVariation(id, body) {}
+  async retrieveVariation(id) {
+    await this.variationExist(id);
+    const variation = await VariationModel.aggregate(
+      variationRetrieveAggregate(id)
+    );
+    return variation;
+  }
 
-  async deleteVariation(id) {}
+  async updateVariation(id, body) {
+    await this.variationExist(id);
+    return await VariationModel.findByIdAndUpdate(id, body, { new: true });
+  }
+
+  async deleteVariation(id) {
+    await this.variationExist(id);
+    return await VariationModel.findByIdAndUpdate(
+      id,
+      { isActive: false },
+      { new: true }
+    );
+  }
 }
 
 module.exports = VariationService;
