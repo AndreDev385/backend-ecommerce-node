@@ -25,6 +25,10 @@ const ProductVariationSchema = new Schema(
       type: Number,
       default: 0,
     },
+    sellCounter: {
+      type: Number,
+      default: 0,
+    },
     offerPrice: {
       type: Number,
       default: 0,
@@ -46,6 +50,7 @@ ProductVariationSchema.methods.toJSON = function () {
   delete productVariationModel.createdAt;
   delete productVariationModel.updatedAt;
   delete productVariationModel.__v;
+  delete productVariationModel.isActive;
   return productVariationModel;
 };
 

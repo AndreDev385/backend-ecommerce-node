@@ -47,6 +47,7 @@ userSchema.methods.toJSON = function () {
   delete userModel.createdAt;
   delete userModel.updatedAt;
   delete userModel.__v;
+  delete userModel.isActive;
   return userModel;
 };
 

@@ -1,8 +1,14 @@
 const router = require("express").Router();
+const boom = require('@hapi/boom')
 
 const ProductService = require("../services/product.service");
 const validatorHandler = require("../middlewares/validator.handler");
-const { createProductSchema } = require("../schemas/product.schema");
+const { checkJWT, isRole } = require("../middlewares/auth.handler");
+const {
+  createProductSchema,
+  idSchema,
+  updateProductSchema,
+} = require("../schemas/product.schema");
 
 const productService = new ProductService();
 
@@ -17,14 +23,18 @@ router.get("/", async (req, res, next) => {
 
 router.get("/:id", async (req, res, next) => {
   try {
-    res.status(200).json({ message: "success" });
+    const { id } = req.params;
+    const product = await productService.retrieveProduct(id);
+    res.status(200).json({ message: "success", body: product });
   } catch (error) {
     next(error);
   }
 });
 
 router.post(
-  "/create",
+  "/",
+  checkJWT,
+  isRole("admin", "seller"),
   validatorHandler(createProductSchema, "body"),
   async (req, res, next) => {
     try {
@@ -32,7 +42,7 @@ router.post(
       const newProduct = await productService.createProduct(body);
       res.status(201).json({
         message: "Product has been created",
-        body: [newProduct],
+        body: newProduct,
       });
     } catch (error) {
       next(error);
@@ -40,20 +50,42 @@ router.post(
   }
 );
 
-router.put("/:id", async (req, res, next) => {
-  try {
-    res.json({ message: "updated" });
-  } catch (error) {
-    next(error);
+router.put(
+  "/:id",
+  checkJWT,
+  isRole("admin", "seller"),
+  validatorHandler(idSchema, "params"),
+  validatorHandler(updateProductSchema, "body"),
+  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const { body } = req;
+      const updatedProduct = await productService.updateProduct(id, body);
+      console.log(updatedProduct);
+      res.json({ message: "updated", body: updatedProduct });
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
-router.delete("/:id", async (req, res, next) => {
-  try {
-    res.json({ message: "deleted" });
-  } catch (error) {
-    next(error);
+router.delete(
+  "/:id",
+  checkJWT,
+  isRole("admin", "seller"),
+  validatorHandler(idSchema, "params"),
+  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const deletedProduct = await productService.deleteProduct(id);
+      res.status(204).json({
+        message: "succesfully deleted",
+        data: deletedProduct,
+      });
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
 module.exports = router;

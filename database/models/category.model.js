@@ -47,6 +47,7 @@ CategorySchema.methods.toJSON = function () {
   delete categoryModel.createdAt;
   delete categoryModel.updatedAt;
   delete categoryModel.__v;
+  delete categoryModel.isActive;
   return categoryModel;
 };
 

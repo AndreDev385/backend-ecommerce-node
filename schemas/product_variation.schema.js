@@ -20,6 +20,20 @@ const createProductVariationSchema = Joi.object({
   stock,
 });
 
+const idSchema = Joi.object({
+  id: id.required(),
+});
+
+const updateProductVariationSchema = Joi.object({
+  images,
+  attributes,
+  normalPrice,
+  offerPrice,
+  stock,
+});
+
 module.exports = {
   createProductVariationSchema,
+  idSchema,
+  updateProductVariationSchema,
 };
