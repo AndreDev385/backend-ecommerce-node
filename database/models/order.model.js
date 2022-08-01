@@ -9,17 +9,16 @@ const orderSchema = new Schema(
   {
     counter: {
       type: Number,
-      required: true,
     },
 
     total: {
       type: Number,
-      required: true,
     },
 
     status: {
       type: String,
       enum: ['pending', 'paid', 'cancelled'],
+      default: 'pending',
     },
 
     products: [
