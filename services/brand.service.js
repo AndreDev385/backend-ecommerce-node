@@ -1,10 +1,14 @@
 const boom = require("@hapi/boom");
 
 const brandModel = require("../database/models/brand.model");
+const {
+  brandListAggregate,
+  brandRetrieveAggregate,
+} = require("./utils/brandService.query");
 
 class BrandService {
   async getBrands() {
-    const brands = await brandModel.find({ isActive: true });
+    const brands = await brandModel.aggregate(brandListAggregate);
     return brands;
   }
 
@@ -16,7 +20,7 @@ class BrandService {
   }
 
   async retrieveBrand(id) {
-    const brand = await brandModel.findOne({ _id: id, isActive: true });
+    const brand = await brandModel.aggregate(brandRetrieveAggregate(id));
     if (!brand) throw boom.badRequest("Brand not found");
     return brand;
   }
@@ -37,6 +41,16 @@ class BrandService {
       { new: true }
     );
     return brand;
+  }
+
+  async addProduct(brandId, productId) {
+    const brand = await brandModel.findById({ _id: brandId });
+    console.log(brand);
+    await brandModel.findByIdAndUpdate(
+      brandId,
+      { products: brand.products.concat(productId) },
+      { new: true }
+    );
   }
 }
 

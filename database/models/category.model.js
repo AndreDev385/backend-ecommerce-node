@@ -3,6 +3,10 @@ const { ObjectId } = Schema.Types;
 
 const CategorySchema = new Schema(
   {
+    _id: {
+      type: String,
+      required: true,
+    },
     name: {
       type: String,
       required: true,
@@ -12,18 +16,27 @@ const CategorySchema = new Schema(
       ref: "Assets",
       default: null,
     },
-    slug: {
+    ancestors: [
+      {
+        type: String,
+        default: [],
+      },
+    ],
+    /*slug: {
       type: String,
       required: true,
-    },
-    title: {
-      type: String,
-      default: "",
-    },
+    },*/
     description: {
       type: String,
       default: "",
     },
+    products: [
+      {
+        type: ObjectId,
+        ref: "Product",
+        default: [],
+      },
+    ],
     tags: [
       {
         type: String,
@@ -31,10 +44,6 @@ const CategorySchema = new Schema(
       },
     ],
     isActive: {
-      type: Boolean,
-      default: true,
-    },
-    isCategory: {
       type: Boolean,
       default: true,
     },

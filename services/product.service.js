@@ -1,4 +1,7 @@
-const boom = require('@hapi/boom')
+const boom = require("@hapi/boom");
+
+const BrandService = require("./brand.service");
+const CategoryService = require("./category.service");
 
 const ProductModel = require("../database/models/product.model");
 const {
@@ -6,6 +9,8 @@ const {
   productRetrieveAggregate,
 } = require("./utils/productService.query");
 
+let brandService = new BrandService();
+let categoryService = new CategoryService();
 class ProductService {
   async getProducts() {
     const productsAggregate = await ProductModel.aggregate(
@@ -16,6 +21,8 @@ class ProductService {
 
   async createProduct(body) {
     const product = await ProductModel.create(body);
+    await categoryService.addProduct(product.category, product._id);
+    await brandService.addProduct(product.brand, product._id);
     return product;
   }
 

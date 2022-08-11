@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const { ObjectId } = Schema.Types;
@@ -11,17 +11,24 @@ const brandSchema = new Schema(
     },
     description: {
       type: String,
-      default: '',
+      default: "",
     },
     image: {
       type: ObjectId,
-      ref: 'Assets',
+      ref: "Assets",
       default: null,
     },
     isActive: {
       type: Boolean,
       default: true,
     },
+    products: [
+      {
+        type: ObjectId,
+        ref: "Product",
+        default: [],
+      },
+    ],
   },
   { timestamps: true }
 );
@@ -35,6 +42,6 @@ brandSchema.methods.toJSON = function () {
   return brandModel;
 };
 
-const brand = mongoose.model('Brand', brandSchema);
+const brand = mongoose.model("Brand", brandSchema);
 
 module.exports = brand;

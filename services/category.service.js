@@ -1,22 +1,26 @@
 const CategoryModel = require("../database/models/category.model");
 const boom = require("@hapi/boom");
+const {
+  categoryListAggregate,
+  categoryRetrieveAggregate,
+} = require("./utils/categoryService.query");
 
 class CategoryService {
   async getCategories() {
-    const categories = await CategoryModel.find({ isActive: true });
+    let categories = await CategoryModel.aggregate(categoryListAggregate);
     return categories;
   }
 
   async createCategory(body) {
-    const categoryExist = await CategoryModel.findOne({name: body['name']})
-    if (categoryExist) throw boom.badRequest('Category already exist')
     const category = await CategoryModel.create(body);
-    return category
+    return category;
   }
 
   async retrieveCategory(id) {
-    const category = await CategoryModel.findById(id);
-    if (!category) throw boom.badRequest("Category not found");
+    let category = await CategoryModel.aggregate(categoryRetrieveAggregate(id));
+    if (category.length < 1) throw boom.badRequest("Category not found");
+    let descendants = await CategoryModel.find({ ancestors: category[0]._id });
+    category[0] = {...category[0], descendants}
     return category;
   }
 
@@ -36,6 +40,15 @@ class CategoryService {
       { new: true }
     );
     return category;
+  }
+
+  async addProduct(categoryId, productId) {
+    const category = await CategoryModel.findById({ _id: categoryId });
+    await CategoryModel.findByIdAndUpdate(
+      categoryId,
+      { products: category.products.concat(productId) },
+      { new: true }
+    );
   }
 }
 

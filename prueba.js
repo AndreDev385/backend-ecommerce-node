@@ -1,3 +1,2 @@
-const bcrypt = require('bcrypt')
-
-bcrypt.hash('123456789', 10).then(r => console.log(r))
+const array = ["electronics", "laptops"]
+console.log(array.join("/"))
