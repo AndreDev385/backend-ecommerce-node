@@ -61,6 +61,10 @@ class UserService {
     return {
       token,
       refreshToken,
+      user: {
+        name: user.name,
+        email: user.email,
+      },
     };
   }
 

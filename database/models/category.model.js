@@ -1,4 +1,4 @@
-const { Schema, model } = require("mongoose");
+const { Schema, model } = require('mongoose');
 const { ObjectId } = Schema.Types;
 
 const CategorySchema = new Schema(
@@ -9,20 +9,21 @@ const CategorySchema = new Schema(
     },
     image: {
       type: ObjectId,
-      ref: "Assets",
+      ref: 'Assets',
       default: null,
     },
     slug: {
       type: String,
       required: true,
     },
+    //no se si tiene sentido manejar un title y un name
     title: {
       type: String,
-      default: "",
+      default: '',
     },
     description: {
       type: String,
-      default: "",
+      default: '',
     },
     tags: [
       {
@@ -51,6 +52,6 @@ CategorySchema.methods.toJSON = function () {
   return categoryModel;
 };
 
-const CategoryModel = model("Category", CategorySchema);
+const CategoryModel = model('Category', CategorySchema);
 
 module.exports = CategoryModel;
