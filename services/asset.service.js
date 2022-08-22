@@ -36,6 +36,23 @@ class AssetService {
 
     return newAsset;
   }
+
+  async deleteAsset(id) {
+    const asset = await assetModel.findById(id);
+
+    if (!asset) {
+      throw new Error('Asset not found');
+    }
+
+    await s3
+      .deleteObject({
+        Bucket: config.S3_BUCKET_NAME,
+        Key: asset.originalUrl.split('/').pop(),
+      })
+      .promise();
+
+    await assetModel.findByIdAndDelete(id);
+  }
 }
 
 module.exports = AssetService;

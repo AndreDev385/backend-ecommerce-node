@@ -3,6 +3,8 @@ const express = require('express');
 const assetService = require('../services/asset.service');
 const { checkJWT, isRole } = require('../middlewares/auth.handler');
 const { isImage } = require('../middlewares/image.handler');
+const validatorHandler = require('../middlewares/validator.handler');
+const { idAssetSchema } = require('../schemas/asset.schema');
 
 const router = express.Router();
 const service = new assetService();
@@ -38,5 +40,26 @@ router.post('/', checkJWT, isRole('admin', 'seller'), isImage, async (req, res, 
     next(err);
   }
 });
+
+router.delete(
+  '/:id',
+  checkJWT,
+  isRole('admin', 'seller'),
+  validatorHandler(idAssetSchema, 'params'),
+  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      await service.deleteAsset(id);
+
+      res.json({
+        body: {},
+        message: 'Image deleted successfully',
+        statusCode: 200,
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+);
 
 module.exports = router;

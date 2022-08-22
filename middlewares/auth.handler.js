@@ -16,7 +16,7 @@ function checkJWT(req, res, next) {
 
     next();
   } catch (err) {
-    next(boom.unauthorized());
+    next(boom.unauthorized('Token expired or invalid'));
   }
 }
 

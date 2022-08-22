@@ -9,9 +9,20 @@ const {
   recoverySchema,
   changePasswordSchema,
 } = require('../schemas/auth.schema');
+const { checkJWT } = require('../middlewares/auth.handler');
 
 const router = express.Router();
 const service = new authService();
+
+router.get('/me', checkJWT, async (req, res, next) => {
+  try {
+    const user = await service.getUser(req.user.uid);
+    res.status(200).json({ message: 'success', body: user });
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+});
 
 router.post(
   '/login',
@@ -34,7 +45,7 @@ router.post(
 
 router.get('/refresh-token', async (req, res, next) => {
   try {
-    const refreshToken = req.headers['x-auth-token'];
+    const refreshToken = req.headers['x-auth-refresh-token'];
 
     if (!refreshToken) {
       throw boom.unauthorized('No refresh token provided');

@@ -1,9 +1,9 @@
-const Joi = require("joi");
-Joi.objectId = require("joi-objectid")(Joi);
+const Joi = require('joi');
+Joi.objectId = require('joi-objectid')(Joi);
 
 const id = Joi.objectId();
 const name = Joi.string();
-const description = Joi.string();
+const description = Joi.string().allow('');
 const image = Joi.string();
 
 const createBrandSchema = Joi.object({

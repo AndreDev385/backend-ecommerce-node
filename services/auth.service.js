@@ -7,6 +7,20 @@ const nodeMailer = require('nodemailer');
 const { config } = require('../config');
 
 class UserService {
+  async getUser(id) {
+    const user = await userModel.findOne({ _id: id, isActive: true });
+
+    if (!user) {
+      throw boom.notFound('User not found');
+    }
+
+    return {
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    };
+  }
+
   async isExistUser(email) {
     const user = await userModel.findOne({ email });
 
@@ -64,6 +78,7 @@ class UserService {
       user: {
         name: user.name,
         email: user.email,
+        role: user.role,
       },
     };
   }
@@ -72,6 +87,7 @@ class UserService {
     await this.isValidRefreshToken(token);
 
     const user = jwt.verify(token, config.REFRESH_SECRET_KEY);
+
     const accessToken = this.generateAndSignAccessToken(user);
 
     return accessToken;
@@ -79,7 +95,7 @@ class UserService {
 
   generateAndSignAccessToken(user) {
     const payload = {
-      uid: user.id,
+      uid: user?.id || user.uid,
       role: user.role,
     };
 
