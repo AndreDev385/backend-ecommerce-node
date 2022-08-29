@@ -4,7 +4,7 @@ const { config } = require('../config');
 
 const dbConnection = async () => {
   try {
-    mongoose.connect(config.mongodbUri, {
+    await mongoose.connect(config.mongodbUri, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
