@@ -3,7 +3,11 @@ const { ObjectId } = Schema.Types;
 
 const VariationAttributeSchema = new Schema(
   {
-    name: {
+    type: {
+      type: String,
+      required: true,
+    },
+    label: {
       type: String,
       required: true,
     },
@@ -45,7 +49,7 @@ const ProductVariationSchema = new Schema(
     },
     offerPrice: {
       type: Number,
-      default: 0,
+      default: null,
     },
     stock: {
       type: Number,
