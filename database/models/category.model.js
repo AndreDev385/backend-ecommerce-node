@@ -17,10 +17,10 @@ const CategorySchema = new Schema(
       required: true,
     },
     //no se si tiene sentido manejar un title y un name
-    title: {
+    /*title: {
       type: String,
       default: '',
-    },
+    },*/
     description: {
       type: String,
       default: '',
@@ -35,10 +35,20 @@ const CategorySchema = new Schema(
       type: Boolean,
       default: true,
     },
-    isCategory: {
+    /*isCategory: {
       type: Boolean,
       default: true,
+    },*/
+    parent: {
+      type: ObjectId,
+      default: null
     },
+    children: [
+      {
+        type: ObjectId,
+        default: []
+      }
+    ]
   },
   { timestamps: true }
 );

@@ -8,14 +8,24 @@ class CategoryService {
   }
 
   async createCategory(body) {
-    const categoryExist = await CategoryModel.findOne({name: body['name']})
+    const categoryExist = await CategoryModel.findOne({ name: body['name'] })
     if (categoryExist) throw boom.badRequest('Category already exist')
     const category = await CategoryModel.create(body);
+    if (body.parent) {
+      // logica para agregar el hijo al padre
+      this.addChildren(body.parent, category.id)
+    }
     return category
   }
 
   async retrieveCategory(id) {
     const category = await CategoryModel.findById(id);
+    if (!category) throw boom.badRequest("Category not found");
+    return category;
+  }
+
+  async retrieveCategoryBySlug(slug) {
+    const category = await CategoryModel.findOne({ slug });
     if (!category) throw boom.badRequest("Category not found");
     return category;
   }
@@ -36,6 +46,11 @@ class CategoryService {
       { new: true }
     );
     return category;
+  }
+
+  async addChildren(parentId, childrenId) {
+    const category = await CategoryModel.findById(parentId)
+    await CategoryModel.findByIdAndUpdate(parentId, { children: [...category.children, childrenId] })
   }
 }
 

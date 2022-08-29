@@ -8,6 +8,7 @@ const slug = Joi.string();
 const title = Joi.string();
 const description = Joi.string();
 const tags = Joi.array().items(Joi.string());
+const parent = Joi.objectId()
 
 const createCategorySchema = Joi.object({
   name: name.required(),
@@ -16,6 +17,7 @@ const createCategorySchema = Joi.object({
   title,
   description,
   tags,
+  parent
 });
 
 const idSchema = Joi.object({
@@ -29,6 +31,7 @@ const updateCategorySchema = Joi.object({
   title,
   description,
   tags,
+  parent
 });
 
 module.exports = {
