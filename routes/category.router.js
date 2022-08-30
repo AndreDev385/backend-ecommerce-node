@@ -23,7 +23,7 @@ router.get('/', async (req, res, next) => {
 router.get('/:slug', async (req, res, next) => {
   try {
     const { slug } = req.params;
-    console.log(slug)
+    console.log(slug);
     const category = await categoryService.retrieveCategoryBySlug(slug);
     res.status(200).json({ message: 'success', body: category });
   } catch (error) {
@@ -32,7 +32,7 @@ router.get('/:slug', async (req, res, next) => {
 });
 
 router.post(
-  '/create',
+  '/',
   checkJWT,
   isRole('admin', 'seller'),
   validatorHandler(createCategorySchema, 'body'),
