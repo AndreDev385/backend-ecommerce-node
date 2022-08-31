@@ -1,33 +1,33 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const { Schema } = mongoose;
 const { ObjectId } = Schema.Types;
 
 const assetSchema = new Schema(
-  {
-    owner: {
-      type: ObjectId,
-      ref: 'User',
-      required: true,
-    },
+	{
+		owner: {
+			type: ObjectId,
+			ref: "User",
+			required: true,
+		},
 
-    originalUrl: {
-      type: String,
-      required: true,
-    },
+		originalUrl: {
+			type: String,
+			required: true,
+		},
 
-    optimizedUrl: {
-      type: String,
-      default: null,
-    },
+		optimizedUrl: {
+			type: String,
+			default: null,
+		},
 
-    isActive: {
-      type: Boolean,
-      default: true,
-    },
-  },
-  { timestamps: true }
+		isActive: {
+			type: Boolean,
+			default: true,
+		},
+	},
+	{ timestamps: true }
 );
 
-const asset = mongoose.model('Assets', assetSchema);
+const asset = mongoose.model("Assets", assetSchema);
 
 module.exports = asset;

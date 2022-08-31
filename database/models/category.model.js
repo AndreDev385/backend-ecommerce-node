@@ -1,67 +1,67 @@
-const { Schema, model } = require('mongoose');
+const { Schema, model } = require("mongoose");
 const { ObjectId } = Schema.Types;
 
 const CategorySchema = new Schema(
-  {
-    name: {
-      type: String,
-      required: true,
-    },
-    image: {
-      type: ObjectId,
-      ref: 'Assets',
-      default: null,
-    },
-    slug: {
-      type: String,
-      required: true,
-    },
-    //no se si tiene sentido manejar un title y un name
-    /*title: {
+	{
+		name: {
+			type: String,
+			required: true,
+		},
+		image: {
+			type: ObjectId,
+			ref: "Assets",
+			default: null,
+		},
+		slug: {
+			type: String,
+			required: true,
+		},
+		//no se si tiene sentido manejar un title y un name
+		/*title: {
       type: String,
       default: '',
     },*/
-    description: {
-      type: String,
-      default: '',
-    },
-    tags: [
-      {
-        type: String,
-        default: [],
-      },
-    ],
-    isActive: {
-      type: Boolean,
-      default: true,
-    },
-    /*isCategory: {
+		description: {
+			type: String,
+			default: "",
+		},
+		tags: [
+			{
+				type: String,
+				default: [],
+			},
+		],
+		isActive: {
+			type: Boolean,
+			default: true,
+		},
+		/*isCategory: {
       type: Boolean,
       default: true,
     },*/
-    parent: {
-      type: ObjectId,
-      default: null
-    },
-    children: [
-      {
-        type: ObjectId,
-        default: []
-      }
-    ]
-  },
-  { timestamps: true }
+		parent: {
+			type: ObjectId,
+			default: null
+		},
+		children: [
+			{
+				type: ObjectId,
+				default: []
+			}
+		]
+	},
+	{ timestamps: true }
 );
 
 CategorySchema.methods.toJSON = function () {
-  const categoryModel = this.toObject();
-  delete categoryModel.createdAt;
-  delete categoryModel.updatedAt;
-  delete categoryModel.__v;
-  delete categoryModel.isActive;
-  return categoryModel;
+	const categoryModel = this.toObject();
+	delete categoryModel.createdAt;
+	delete categoryModel.updatedAt;
+	delete categoryModel.__v;
+	delete categoryModel.isActive;
+	return categoryModel;
 };
 
-const CategoryModel = model('Category', CategorySchema);
+const CategoryModel = model("Category", CategorySchema);
 
 module.exports = CategoryModel;

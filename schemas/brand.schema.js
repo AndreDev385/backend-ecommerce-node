@@ -1,25 +1,25 @@
-const Joi = require('joi');
-Joi.objectId = require('joi-objectid')(Joi);
+const Joi = require("joi");
+Joi.objectId = require("joi-objectid")(Joi);
 
 const id = Joi.objectId();
 const name = Joi.string();
-const description = Joi.string().allow('');
+const description = Joi.string().allow("");
 const image = Joi.string();
 
 const createBrandSchema = Joi.object({
-  name: name.required(),
-  description,
-  image,
+	name: name.required(),
+	description,
+	image,
 });
 
 const idSchema = Joi.object({
-  id: id.required(),
+	id: id.required(),
 });
 
 const updateBrandSchema = Joi.object({
-  name,
-  description,
-  image,
+	name,
+	description,
+	image,
 });
 
 module.exports = { createBrandSchema, idSchema, updateBrandSchema };
