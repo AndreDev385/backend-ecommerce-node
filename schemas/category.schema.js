@@ -1,5 +1,5 @@
-const Joi = require("joi");
-Joi.objectId = require("joi-objectid")(Joi);
+const Joi = require('joi');
+Joi.objectId = require('joi-objectid')(Joi);
 
 const id = Joi.objectId();
 const name = Joi.string();
