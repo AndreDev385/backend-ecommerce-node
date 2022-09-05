@@ -1,14 +1,19 @@
-const boom = require('@hapi/boom');
+const boom = require("@hapi/boom");
 
-const ProductModel = require('../database/models/product.model');
+const ProductModel = require("../database/models/product.model");
+const AssetService = require("./asset.service");
 const {
   productListAggregate,
   productRetrieveAggregate,
-} = require('./utils/productService.query');
+} = require("./utils/productService.query");
+
+const assetService = new AssetService();
 
 class ProductService {
   async getProducts() {
-    const productsAggregate = await ProductModel.aggregate(productListAggregate);
+    const productsAggregate = await ProductModel.aggregate(
+      productListAggregate
+    );
     return productsAggregate;
   }
 
@@ -19,13 +24,18 @@ class ProductService {
 
   async productExists(id) {
     const product = await ProductModel.findOne({ _id: id, isActive: true });
-    if (!product) throw boom.badRequest('Product Not found');
+    if (!product) throw boom.badRequest("Product Not found");
   }
 
   async retrieveProduct(id) {
     await this.productExists(id);
     const product = await ProductModel.aggregate(productRetrieveAggregate(id));
     return product;
+  }
+
+  async findOne(id) {
+    await this.productExists(id);
+    return await ProductModel.findById(id);
   }
 
   async updateProduct(id, body) {
@@ -54,7 +64,7 @@ class ProductService {
     );
   }
 
-  async deleteProduct(id) {
+  async desactiveProduct(id) {
     await this.productExists(id);
     const product = await ProductModel.findByIdAndUpdate(
       { _id: id },
@@ -62,6 +72,15 @@ class ProductService {
       { new: true }
     );
     return product;
+  }
+
+  async deleteProduct(id) {
+    await this.productExists(id);
+    const product = await this.findOne(id);
+    for (const image of product.images) {
+      await assetService.deleteAsset(image);
+    }
+    return await ProductModel.findByIdAndDelete(id);
   }
 }
 
