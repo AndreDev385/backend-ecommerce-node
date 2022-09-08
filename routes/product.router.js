@@ -66,9 +66,11 @@ router.post('/dashboard', async (req, res, next) => {
     });
 
     for (const variation of body.variations) {
+      const { offerPrice, ...body } = variation;
       const newVariation = await variationService.createVariation({
         product: product._id,
-        ...variation,
+        offerPrice: offerPrice === 0 ? null : offerPrice,
+        ...body,
       });
 
       variationsIds.push(newVariation._id);
